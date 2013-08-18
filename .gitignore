@@ -1,0 +1,12 @@
+.lager_json_formatter.plt
+.eunit
+deps
+priv
+*.o
+ebin
+log
+logs
+test/*.beam
+.DS_Store
+erl_crash.dump
+
