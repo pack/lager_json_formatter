@@ -29,7 +29,7 @@ tests: deps-test app-test ct
 inttests: deps-test app-test intct
 
 eunit:
-		@$(REBAR) -C rebar.tests.config eunit skip_deps=true
+	@$(REBAR) -C rebar.eunit.config eunit skip_deps=true
 
 ct: deps
 	@$(REBAR) -C rebar.tests.config ct skip_deps=true
@@ -41,8 +41,8 @@ intct: deps
 
 build-plt: deps app
 	@dialyzer --build_plt --output_plt .$(PROJECT).plt \
-  					--apps erts kernel stdlib sasl inets crypto public_key ssl
+					--apps erts kernel stdlib sasl inets crypto public_key ssl
 
 dialyze:
 	@dialyzer --src src --plt .$(PROJECT).plt --no_native \
-  					-Werror_handling -Wrace_conditions -Wunmatched_returns
+					-Werror_handling -Wrace_conditions -Wunmatched_returns

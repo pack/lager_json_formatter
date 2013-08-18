@@ -6,6 +6,7 @@
   {modules, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  lager
                  ]}
 ]}.
