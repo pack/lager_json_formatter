@@ -1,12 +1,19 @@
 {application, lager_json_formatter,
 [
-  {id, "LagerJsonFormatter"},
-  {description, "Lager JSON logging formatter"},
-  {vsn, "0.0.1"},
-  {modules, []},
-  {applications, [
-                  kernel,
-                  stdlib,
-                  lager
-                 ]}
+ {id, "LagerJsonFormatter"},
+ {description, "Lager JSON logging formatter"},
+ {vsn, "0.0.1"},
+ {applications, [
+                 kernel,
+                 stdlib,
+                 lager
+                ]},
+ {modules, [lager_json_formatter]},
+ {env, [
+        {lager, [
+                 {handlers, [
+                             {lager_console_backend, [{level, info}, {formatter, lager_json_formatter}]}
+                            ]}
+                ]}
+       ]}
 ]}.
