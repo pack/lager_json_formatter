@@ -1,5 +1,5 @@
-PROJECT = json_lager
-REBAR = `which rebar || ./rebar`
+PROJECT = json_lager_formatter
+REBAR = $(shell which rebar || ./rebar)
 
 # Options.
 

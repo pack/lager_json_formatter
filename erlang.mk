@@ -24,7 +24,7 @@ clean:
 deps-test:
 	@$(REBAR) -C rebar.tests.config get-deps
 
-tests: deps-test app-test ct
+test: deps-test app-test ct
 
 inttests: deps-test app-test intct
 
