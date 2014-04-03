@@ -11,7 +11,8 @@
 format(Msg, Config, _Colors) -> format(Msg, Config).
 format(Msg, Config) ->
   Message = lager_msg:message(Msg),
-  handle_format(Msg, Config, Message, is_binary(Message)).
+  erlang:iolist_to_binary(
+    [handle_format(Msg, Config, Message, is_binary(Message)), <<"\n">>]).
 
 %% Internal
 handle_format(Msg, Config, Message, true) ->
@@ -29,7 +30,7 @@ handle_binary(Msg, Config, Message, false) ->
 handle_list(Msg, Config, Message, true) ->
   handle_json(Msg, Config, Message);
 handle_list(Msg, Config, Message, false) ->
-  [First|Tail] = Message,
+  [First|_Tail] = Message,
   case is_number(First) of
     true  -> handle_raw(Msg, Config, list_to_binary(Message));
     false -> handle_metadata(Msg, Config, prepare_json_message(Message))
@@ -93,28 +94,29 @@ format_test_() ->
 format_standard_string() ->
   Msg = lager_msg:new("test", info, [], []),
   IsoTS = iso8601:format(lager_msg:timestamp(Msg)),
-  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\"}",
+  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\"}\n",
   TestStr = lists:flatten(io_lib:format(MStr, [IsoTS, "test"])),
   ?assertEqual(list_to_binary(TestStr), format(Msg, [])).
 
 format_standard_binary() ->
   Msg = lager_msg:new(<<"test">>, info, [], []),
   IsoTS = iso8601:format(lager_msg:timestamp(Msg)),
-  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\"}",
+  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\"}\n",
   TestStr = lists:flatten(io_lib:format(MStr, [IsoTS, "test"])),
   ?assertEqual(list_to_binary(TestStr), format(Msg, [])).
 
 format_metadata_message() ->
   Msg = lager_msg:new([{m, "awesome"}, {age, 25}], info, [], []),
   IsoTS = iso8601:format(lager_msg:timestamp(Msg)),
-  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\",\"age\":~w}",
+  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\",\"age\":~w}\n",
   TestStr = lists:flatten(io_lib:format(MStr, [IsoTS, "awesome", 25])),
   ?assertEqual(list_to_binary(TestStr), format(Msg, [])).
 
 format_json_message() ->
-  Msg = lager_msg:new(<<"{\"name\":\"bob\",\"m\":\"mission success\"}">>, info, [], []),
+  Msg = lager_msg:new(<<"{\"name\":\"bob\",\"m\":\"mission success\"}">>,
+                      info, [], []),
   IsoTS = iso8601:format(lager_msg:timestamp(Msg)),
-  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\",\"name\":\"~s\"}",
+  MStr = "{\"s\":\"info\",\"t\":\"~s\",\"m\":\"~s\",\"name\":\"~s\"}\n",
   TestStr = lists:flatten(io_lib:format(MStr, [IsoTS, "mission success", "bob"])),
   ?assertEqual(list_to_binary(TestStr), format(Msg, [])).
 
