@@ -5,9 +5,10 @@
 -include_lib("eunit/include/eunit.hrl").
 -endif.
 
--export([format/2]).
+-export([format/2, format/3]).
 
 -spec format(lager_msg:lager_msg(), list()) -> iolist().
+format(Msg, Config, _Colors) -> format(Msg, Config).
 format(Msg, Config) ->
   Message = lager_msg:message(Msg),
   handle_format(Msg, Config, Message, is_binary(Message)).
